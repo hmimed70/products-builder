@@ -8,7 +8,8 @@ interface IProps {
     closeModal: () => void
 
 }
-const  Modal = ({children, isOpen , title, closeModal} : IProps) => {
+const  Modal = ({children, title, isOpen, closeModal} : IProps) => {
+
 
   return (
     <>

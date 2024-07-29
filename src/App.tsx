@@ -21,7 +21,7 @@ function App() {
 
   return (
     <main className="container">
-      <Button styles=" bg-indigo-600  px-3 py-2 text-right mx-auto mt-4" width="w-fit" onClick={openModal}>Open Model</Button>
+      <Button styles=" bg-indigo-600  px-3 py-2 text-right mx-auto mt-4" width="w-fit" onClick={openModal}>ADD</Button>
       <div className="grid grid-cols-1   p-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4  rounded-md m-5">
         {renderProducts()}
       </div>
