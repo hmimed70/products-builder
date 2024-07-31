@@ -1,21 +1,35 @@
-import { useState } from "react"
+import { useState, ChangeEvent } from "react"
 import { formInputsList, productList } from "./assets/data"
 import ProductCard from "./components/ProductCard"
 import Modal from "./components/ui/Modal"
 import Button from "./components/ui/Button"
 import Input from "./components/ui/Input"
+import { IProduct } from "./interfaces"
 
 function App() {
+  const [product, setProduct] = useState <IProduct>({
+    title: "",
+    price: "",
+    description: "",
+    category: {
+      name: "",
+      imageURL: "",
+    },
+    colors: [],
+    imageURL: "",
+  })
   const [isOpen, setIsOpen] = useState(false)
 
-  function closeModal() {
-    setIsOpen(false)
+  const closeModal = () => setIsOpen(false)
+  const openModal = () => setIsOpen(true)
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    setProduct((prev) => ({ ...prev, [name]: value }));
+    setProduct({ ...product, [name]: value });
   }
 
-  function openModal() {
-    setIsOpen(true)
-  }
- 
   const renderProductsList = productList.map((product) =>
     {
       return(
@@ -27,7 +41,13 @@ function App() {
         <div className="my-4 flex flex-col">
         <label className="block mb-2 text-md font-normal  text-gray-900" 
         htmlFor={input.name}>{input.label}</label> 
-        <Input onChange={() => {}} placeholder={input.name} key={input.id}  id={input.id} name={input.name} type="text" />
+        <Input onChange={handleChange} 
+         key={input.id}  
+         id={input.id} 
+         name={input.name} 
+         type="text"
+         value={""}
+         />
         </div>
       )
      })
