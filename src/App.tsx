@@ -38,11 +38,13 @@ function App() {
         {renderProductsList}
       </div>
         <Modal closeModal={closeModal} isOpen={isOpen} title="ADD NEW PRODUCT" >
+          <form>
           {renderformInputList}
           <div className="flex justify-between space-x-2 items-center mt-3">
             <Button styles=" bg-indigo-400 hover:bg-indigo-700  px-3 py-2 ">Submit</Button> 
             <Button onClick={closeModal} styles="bg-red-400  px-3 py-2 hover:bg-red-700">Cancel</Button> 
           </div>  
+          </form>
         </Modal>
     </main>
 
