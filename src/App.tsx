@@ -46,7 +46,7 @@ function App() {
          id={input.id} 
          name={input.name} 
          type="text"
-         value={""}
+         value={product[input.name]}
          />
         </div>
       )
