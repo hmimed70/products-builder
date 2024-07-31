@@ -1,23 +1,27 @@
-import { useState, ChangeEvent } from "react"
+import { useState, ChangeEvent, FormEvent } from "react"
 import { formInputsList, productList } from "./assets/data"
 import ProductCard from "./components/ProductCard"
 import Modal from "./components/ui/Modal"
 import Button from "./components/ui/Button"
 import Input from "./components/ui/Input"
 import { IProduct } from "./interfaces"
+import { productValidation } from "./validation"
+import ErrorMessage from "./components/ErrorMessage"
 
 function App() {
-  const [product, setProduct] = useState <IProduct>({
-    title: "",
-    price: "",
-    description: "",
-    category: {
-      name: "",
+  const defaultObj = {
+  
+      title: "",
+      price: "",
+      description: "",
+      category: {
+        name: "",
+        imageURL: "",
+      },
+      colors: [],
       imageURL: "",
-    },
-    colors: [],
-    imageURL: "",
-  })
+  }
+  const [product, setProduct] = useState <IProduct>(defaultObj)
   const [isOpen, setIsOpen] = useState(false)
 
   const closeModal = () => setIsOpen(false)
@@ -27,9 +31,29 @@ function App() {
     const { name, value } = e.target;
     console.log(name, value);
     setProduct((prev) => ({ ...prev, [name]: value }));
-    setProduct({ ...product, [name]: value });
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   }
+  const [errors, setErrors] = useState({title: "", price: "", description: "", imageURL: ""})
 
+  const submitHandler = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+     const err = productValidation({description: product.description, price: product.price, title: product.title, imageURL: product.imageURL});
+     console.log(err);
+     const hasErrorsMsg = Object.values(err).some(value => value==="") &&
+     Object.values(err).every((value) => value==="");
+     console.log(hasErrorsMsg);
+     if (!hasErrorsMsg) {
+           setErrors(err);
+           return;
+    }
+      console.log("sending data"); 
+      setErrors({title: "", price: "", description: "", imageURL: ""})
+     }
+
+  const onCancel = () => {
+    setProduct(defaultObj);
+    closeModal();
+  }
   const renderProductsList = productList.map((product) =>
     {
       return(
@@ -38,7 +62,7 @@ function App() {
   const renderformInputList = formInputsList.map((input) => 
      {
       return(
-        <div className="my-4 flex flex-col">
+        <div className="my-4 flex flex-col" key={input.id}>
         <label className="block mb-2 text-md font-normal  text-gray-900" 
         htmlFor={input.name}>{input.label}</label> 
         <Input onChange={handleChange} 
@@ -48,7 +72,8 @@ function App() {
          type="text"
          value={product[input.name]}
          />
-        </div>
+         <ErrorMessage msg={errors[input.name]} />
+       </div>
       )
      })
   return (
@@ -58,11 +83,17 @@ function App() {
         {renderProductsList}
       </div>
         <Modal closeModal={closeModal} isOpen={isOpen} title="ADD NEW PRODUCT" >
-          <form>
+          <form onSubmit={submitHandler}>
           {renderformInputList}
           <div className="flex justify-between space-x-2 items-center mt-3">
-            <Button styles=" bg-indigo-400 hover:bg-indigo-700  px-3 py-2 ">Submit</Button> 
-            <Button onClick={closeModal} styles="bg-red-400  px-3 py-2 hover:bg-red-700">Cancel</Button> 
+            <Button 
+              styles=" bg-indigo-400 hover:bg-indigo-700 
+              px-3 py-2 ">Submit
+            </Button> 
+            <Button 
+              styles="bg-red-400  px-3 py-2 hover:bg-red-700"
+               onClick={onCancel}
+            >Cancel</Button> 
           </div>  
           </form>
         </Modal>

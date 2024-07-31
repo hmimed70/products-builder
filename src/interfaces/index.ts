@@ -7,7 +7,7 @@ export interface IProduct {
       name: string;
       imageURL: string;
     };
-    imageURL?: string;
+    imageURL: string;
     colors: string[];
   }
   export interface IFormInput {
