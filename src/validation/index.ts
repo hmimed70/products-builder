@@ -10,7 +10,7 @@ export const productValidation = (product: { title: string, price: string, descr
     if (!product.title.trim() || product.title.length < 5 || product.title.length > 50) {
         error.title = "Product title must be between 5 and 50 characters";
     }
-    if (!product.description.trim() || product.description.length < 10 || product.description.length > 500) {
+    if (!product.description.trim() || product.description.length < 10 || product.description.length > 1000) {
         error.description = "Product description must be between 10 and 500 characters";
     }
 
@@ -19,7 +19,7 @@ export const productValidation = (product: { title: string, price: string, descr
     if(!validUrl || !product.imageURL.trim()) {
         error.imageURL = "Product Image URL is not valid";
     }
-   if(!product.price.trim() || isNaN(Number(product.price)) || Number(product.price) < 0 || Number(product.price) > 1000) {
+   if(!product.price.trim() || isNaN(Number(product.price)) || Number(product.price) < 0 || Number(product.price) > 800000) {
         error.price = "Product price must be a number between 1 and 1000";
     }
 

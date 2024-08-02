@@ -11,3 +11,6 @@ export function txtSlice(text: string, length: number = 50) {
         return text;
     }
 }
+export function formatNumber (num: string | number) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+}

@@ -1,16 +1,19 @@
-'use client'
-
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import {  Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { categories } from '../../assets/data'
+import { ICategory } from '../../interfaces'
+
+interface IProps {
+  selected: {name: string, imageURL: string},
+  setSelected: (category: ICategory) => void
+}
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function SelectCategory() {
-  const [selected, setSelected] = useState(categories[0])
+export default function SelectCategory({selected, setSelected}: IProps) {
 
   return (
     <Listbox value={selected} onChange={setSelected}>
