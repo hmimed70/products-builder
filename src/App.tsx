@@ -15,7 +15,7 @@ import {  ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const deletePrd = () => toast("Product Delete succefully!",{ type: "error" });
-  const updatePrd = () => toast("Product Updated succefully!",{ type: "info" });
+  const updatePrd = () => toast("Product Updated succefully!",{ type: "success" });
 
   const addPrd = () => toast("Product Added succefully!", { type: "success" });
 
@@ -37,11 +37,16 @@ function App() {
 
   const [product, setProduct] = useState <IProduct>(defaultObj)
   const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const [isOpenDelete, setIsOpenDelete] = useState(false);
+
   const [isOpen, setIsOpen] = useState(false)
   const [productData, setProductData] = useState(productList)
   const [tempColor, setTempColor] = useState<string[]>([]);
   const closeModal = () => setIsOpen(false)
   const openModal = () => setIsOpen(true)
+  const closeModalDelete = () => setIsOpenDelete(false)
+  const openModalDelete = () => setIsOpenDelete(true)
+
   const closeModalEdit = () =>setIsOpenEdit(false)
   const openModalEdit = () =>setIsOpenEdit(true)
 
@@ -52,7 +57,12 @@ function App() {
     setProduct((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   }
-  
+  const removeProductHandler = () => {
+    setProductData((prev) => prev.filter((product) => product.id !== productEdit.id));
+    closeModalDelete();
+    setProductEdit(defaultObj);
+    deletePrd();
+  }
   const onChangeEditHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -99,22 +109,25 @@ function App() {
         setTempColor([]);
         setErrors({title: "", price: "", description: "", imageURL: ""});
         setProductEdit(defaultObj);
-        closeModalEdit();
         updatePrd();
+        closeModalEdit();
+
        }
   const onCancel = () => {
     setProduct(defaultObj);
     closeModal();
   }
-const deleteHandler= (product: IProduct) => {
-  setProductData(prev => prev.filter(item => item.id !== product.id));
-  closeModalEdit();
-  deletePrd();
-}
+
   const renderProductsList = productData.map((product, idx) =>
     {
       return(
-        <ProductCard setProductEditIndex={setProductEditIndex} idx={idx} openEditModal={openModalEdit} setProductToEdit={setProductEdit} key={product.id} deleteProduct={() => deleteHandler(product)} product={product} />) 
+        <ProductCard 
+          setProductEditIndex={setProductEditIndex} 
+          idx={idx} openEditModal={openModalEdit} 
+          setProductToEdit={setProductEdit} key={product.id} 
+          product={product} 
+          openModalDelete={openModalDelete}
+        />) 
      });
 
      const renderProductColors = colors.map((color,index) => (
@@ -239,7 +252,23 @@ const deleteHandler= (product: IProduct) => {
           </div>  
           </form>
         </Modal>
-        <ToastContainer position="bottom-center"  limit={1} autoClose={2000}/>
+        <Modal closeModal={closeModalDelete} isOpen={isOpenDelete} title="DELETE THIS PRODUCT" >
+          <div className="my-4 flex flex-col">
+            <h3 className="block mb-2 text-xl font-semibold  text-gray-900">Are you sure you want to delete this product?</h3>
+            <span className="text-gray-500 text-md font-medium">if you delete this product, it will be lost forever, you can't undo it.</span>
+            </div>
+            <div className="flex justify-between space-x-2 items-center mt-3">
+            <Button onClick={removeProductHandler} 
+              styles=" bg-red-400 hover:bg-red-700 
+              px-3 py-2 ">Yes Remove
+            </Button> 
+            <Button 
+              styles="bg-slate-400  px-3 py-2 hover:bg-slate-700"
+               onClick={closeModalDelete}
+            >Cancel</Button> 
+          </div>  
+        </Modal>
+        <ToastContainer position="bottom-center"   autoClose={2000}/>
     </main>
 
   )

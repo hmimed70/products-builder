@@ -6,14 +6,14 @@ import Button from "./ui/Button";
 
 interface IProps {
    product: IProduct;
-   deleteProduct: () => void,
    setProductToEdit: (product: IProduct) => void,
    openEditModal: (value: boolean) => void,
    setProductEditIndex: (value: number) => void,
+   openModalDelete: (value: boolean) => void,
    idx: number
 }
 
-const ProductCard = ({product, setProductToEdit, idx, setProductEditIndex ,deleteProduct, openEditModal }: IProps) => {
+const ProductCard = ({product, setProductToEdit, openModalDelete, idx, setProductEditIndex , openEditModal }: IProps) => {
   const { title, price, description, colors, category, imageURL } = product
    const renderProductColors =  colors.map((color) => {
       return <CircleColor  key={color} color={color} />
@@ -23,6 +23,10 @@ const ProductCard = ({product, setProductToEdit, idx, setProductEditIndex ,delet
       openEditModal(true);
       setProductEditIndex(idx)
     }
+    const deleteProductHandler = () => {
+      setProductToEdit(product)
+      openModalDelete(true);
+    }
   return (
     <div className=" max-w-sm md:max-w-lg mx-auto md:mx-0 border rounded-md p-2 flex flex-col">
         <Image imageUrl={imageURL} alt="product name" className="w-full h-52 lg:object-cover rounded-md mb-2" />
@@ -31,10 +35,10 @@ const ProductCard = ({product, setProductToEdit, idx, setProductEditIndex ,delet
           {txtSlice(description)}
         </p>
         <div className="flex space-x-1 items-center my-3 ">
-            {renderProductColors} 
+            {renderProductColors.length > 0 ? renderProductColors: (<div className="text-gray-500 font-medium">No available colors</div>)} 
         </div>
         <div className="flex justify-between items-center">
-             <span className="font-bold">${formatNumber(price)}</span>
+             <span className="font-bold text-indigo-600">${formatNumber(price)}</span>
              <div className="flex items-center justify-end space-x-3">
              <span className="font-semibold">{category.name}</span>
 
@@ -42,8 +46,8 @@ const ProductCard = ({product, setProductToEdit, idx, setProductEditIndex ,delet
              </div>
         </div>
         <div className="flex justify-between space-x-2 items-center mt-3">
-            <Button onClick={editProductHandler} styles=" bg-indigo-600  px-3 py-2 ">Edit</Button>
-            <Button  styles=" bg-red-600  px-3 py-2 " onClick={deleteProduct}>DELETE</Button>
+            <Button onClick={editProductHandler} styles=" bg-indigo-600 font-medium px-3 py-2 ">EDIT</Button>
+            <Button  styles=" bg-red-600  px-3 font-medium  py-2 " onClick={deleteProductHandler}>DELETE</Button>
          </div>   
     </div>
   );
