@@ -1,14 +1,20 @@
 import { IProduct } from "../interfaces";
 import { txtSlice } from "../utils/functions";
+import CircleColor from "./CircleColor";
 import Image from "./Image";
 import Button from "./ui/Button";
 
 interface IProps {
    product: IProduct;
+   deleteProduct: () => void
 }
 
-const ProductCard = ({product }: IProps) => {
-
+const ProductCard = ({product, deleteProduct }: IProps) => {
+  
+   const renderProductColors =  product.colors.map((color) => {
+      return <CircleColor key={color} color={color} />
+    })
+    
   return (
     <div className=" max-w-sm md:max-w-lg mx-auto md:mx-0 border rounded-md p-2 flex flex-col">
         <Image imageUrl={product.imageURL} alt="product name" className="w-full h-52 lg:object-cover rounded-md mb-2" />
@@ -17,11 +23,7 @@ const ProductCard = ({product }: IProps) => {
           {txtSlice(product.description)}
         </p>
         <div className="flex space-x-2 items-center my-3 ">
-          {
-            product.colors.map((color) => (
-              <span className={`w-5 h-5 rounded-full bg-${color} cursor-pointer`} />
-            ))
-          }
+            {renderProductColors} 
         </div>
         <div className="flex justify-between items-center">
              <span className="font-bold">${product.price}</span>
@@ -29,7 +31,7 @@ const ProductCard = ({product }: IProps) => {
         </div>
         <div className="flex justify-between space-x-2 items-center mt-3">
             <Button onClick={() => alert("clicked")} styles=" bg-indigo-600  px-3 py-2 ">Edit</Button>
-            <Button  styles=" bg-red-600  px-3 py-2 ">DELETE</Button>
+            <Button  styles=" bg-red-600  px-3 py-2 " onClick={deleteProduct}>DELETE</Button>
          </div>   
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, FormEvent } from "react"
-import { formInputsList, productList } from "./assets/data"
+import { categories, colors, formInputsList, productList } from "./assets/data"
 import ProductCard from "./components/ProductCard"
 import Modal from "./components/ui/Modal"
 import Button from "./components/ui/Button"
@@ -7,10 +7,12 @@ import Input from "./components/ui/Input"
 import { IProduct } from "./interfaces"
 import { productValidation } from "./validation"
 import ErrorMessage from "./components/ErrorMessage"
-
+import CircleColor from "./components/CircleColor"
+import { v4 as uuid } from "uuid"
+import SelectCategory from "./components/ui/SelectCategory"
 function App() {
   const defaultObj = {
-  
+
       title: "",
       price: "",
       description: "",
@@ -21,12 +23,14 @@ function App() {
       colors: [],
       imageURL: "",
   }
+
   const [product, setProduct] = useState <IProduct>(defaultObj)
   const [isOpen, setIsOpen] = useState(false)
-
+  const [productData, setProductData] = useState(productList)
+  const [tempColor, setTempColor] = useState<string[]>([]);
   const closeModal = () => setIsOpen(false)
   const openModal = () => setIsOpen(true)
-
+  console.log("product data", productData);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -47,18 +51,37 @@ function App() {
            return;
     }
       console.log("sending data"); 
-      setErrors({title: "", price: "", description: "", imageURL: ""})
+      setErrors({title: "", price: "", description: "", imageURL: ""});
+      setProductData((prev) => [ {...product, colors: tempColor, id: uuid()} , ...prev]);
+      setProduct(defaultObj);
+      closeModal();
      }
+     console.log(tempColor)
 
   const onCancel = () => {
     setProduct(defaultObj);
     closeModal();
   }
-  const renderProductsList = productList.map((product) =>
+
+  const renderProductsList = productData.map((product) =>
     {
       return(
-        <ProductCard key={product.id} product={product} />) 
+        <ProductCard key={product.id} deleteProduct={() => setProductData(prev => prev.filter(item => item.id !== product.id))} product={product} />) 
      });
+
+     const renderProductColors = colors.map((color,index) => (
+       <CircleColor 
+         onClick={()=> {
+          if(tempColor.includes(color)) {
+            setTempColor(prev => prev.filter(item => item !== color))
+            return;          
+          }
+               setTempColor(prev => [...prev, color]);
+          }
+        }
+          key={index} 
+          color={color} />
+        ));
   const renderformInputList = formInputsList.map((input) => 
      {
       return(
@@ -85,6 +108,19 @@ function App() {
         <Modal closeModal={closeModal} isOpen={isOpen} title="ADD NEW PRODUCT" >
           <form onSubmit={submitHandler}>
           {renderformInputList}
+            <SelectCategory  />
+          <div className="flex space-x-1 items-center flex-wrap my-2">
+            {tempColor.map((color,index) => (
+              <span key={index} 
+              className="p-1 mr-1 text-xs 
+              rounded-md text-white"
+              style={{backgroundColor: color}} >
+                  {color}
+              </span>))}
+          </div>
+          <div className="flex space-x-1 items-center flex-wrap my-2">
+           {renderProductColors}
+          </div>
           <div className="flex justify-between space-x-2 items-center mt-3">
             <Button 
               styles=" bg-indigo-400 hover:bg-indigo-700 
