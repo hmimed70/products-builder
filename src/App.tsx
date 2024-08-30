@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent } from "react"
+import { useState, ChangeEvent, FormEvent, useCallback } from "react"
 import { categories, colors, formInputsList, productList } from "./assets/data"
 import ProductCard from "./components/ProductCard"
 import Modal from "./components/ui/Modal"
@@ -42,13 +42,41 @@ function App() {
   const [isOpen, setIsOpen] = useState(false)
   const [productData, setProductData] = useState(productList)
   const [tempColor, setTempColor] = useState<string[]>([]);
-  const closeModal = () => setIsOpen(false)
-  const openModal = () => setIsOpen(true)
-  const closeModalDelete = () => setIsOpenDelete(false)
-  const openModalDelete = () => setIsOpenDelete(true)
 
-  const closeModalEdit = () =>setIsOpenEdit(false)
-  const openModalEdit = () =>setIsOpenEdit(true)
+  const closeModalDelete = () => setIsOpenDelete(false)
+  const openModalDelete = useCallback(() => setIsOpenDelete(true),[]);
+  const openModal = useCallback(() => {
+    setErrors({ title: "", price: "", description: "", imageURL: "" });
+    setTempColor([]);
+    setIsOpen(true);
+  }, []);
+  
+  const openModalEdit = useCallback(() => {
+    setErrors({ title: "", price: "", description: "", imageURL: "" });
+    setTempColor(productEdit.colors);
+    setIsOpenEdit(true);
+  }, [productEdit]);
+
+  const closeModal = () => {
+    setIsOpen(false);
+    setErrors({ title: "", price: "", description: "", imageURL: "" }); // Reset errors
+    setProduct(defaultObj); // Reset product
+    setTempColor([]); // Reset colors
+  };
+  
+  const closeModalEdit = () => {
+    setIsOpenEdit(false);
+    setErrors({ title: "", price: "", description: "", imageURL: "" }); // Reset errors
+    setProductEdit(defaultObj); // Reset productEdit
+    setTempColor([]); // Reset colors
+  };
+  
+  const onCancel = () => {
+    setProduct(defaultObj);
+    setErrors({ title: "", price: "", description: "", imageURL: "" }); // Reset errors
+    setTempColor([]); // Reset colors
+    closeModal();
+  };
 
   console.log("edit  prod data", productEdit);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -90,6 +118,7 @@ function App() {
       addPrd();
      }
      console.log(tempColor)
+
      const submitEditHandler = (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
        const err = productValidation({description: productEdit.description, price: productEdit.price, title: productEdit.title, imageURL: productEdit.imageURL});
@@ -113,10 +142,7 @@ function App() {
         closeModalEdit();
 
        }
-  const onCancel = () => {
-    setProduct(defaultObj);
-    closeModal();
-  }
+
 
   const renderProductsList = productData.map((product, idx) =>
     {

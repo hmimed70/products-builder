@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import { Fragment, memo } from 'react'
 
 interface IProps {
     children: React.ReactNode,
@@ -64,4 +64,4 @@ const  Modal = ({children, title, isOpen, closeModal} : IProps) => {
   )
 }
 
-export default Modal;
+export default memo(Modal);

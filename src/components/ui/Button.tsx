@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 interface IProps {
  children: React.ReactNode;
  onClick?: () => void;
@@ -14,4 +16,4 @@ const Button = ({ children, styles, width='w-full', ...rest }: IProps) => {
   );
 };
 
-export default Button;
+export default memo(Button);

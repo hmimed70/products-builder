@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, memo } from 'react'
 import {  Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { categories } from '../../assets/data'
@@ -13,7 +13,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function SelectCategory({selected, setSelected}: IProps) {
+ function SelectCategory({selected, setSelected}: IProps) {
 
   return (
     <Listbox value={selected} onChange={setSelected}>
@@ -83,3 +83,5 @@ export default function SelectCategory({selected, setSelected}: IProps) {
     </Listbox>
   )
 }
+
+export default memo(SelectCategory)
